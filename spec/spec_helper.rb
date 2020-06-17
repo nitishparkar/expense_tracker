@@ -1,4 +1,5 @@
 require_relative './support/response_parser'
+require_relative './support/timing'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -22,6 +23,18 @@ RSpec.configure do |config|
     require_relative 'support/db'
   end
   
+  config.define_derived_metadata(file_path: /spec\/unit/) do |metadata|
+    metadata[:fail_if_slower_than] = 0.03
+  end
+
+  config.define_derived_metadata(file_path: /spec\/acceptance/) do |metadata|
+    metadata[:fail_if_slower_than] = 0.1
+  end
+
+  config.define_derived_metadata(file_path: /spec\/integration/) do |metadata|
+    metadata[:fail_if_slower_than] = 0.03
+  end
+
   config.filter_gems_from_backtrace 'rack', 'rack-test', 'sequel', 'sinatra'
 
   # rspec-expectations config goes here. You can use an alternate
